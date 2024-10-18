@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Energy and Battery Graph</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-color: #f4f4f4;
+            margin: 60px;
+            height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 450px;
+            /* display: flex; */
+            margin-right: 1100px;
+        }
+        h1 {
+            text-align: center;
+        }
+        canvas {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Solar Energy Production and Battery Status</h1>
+        <canvas id="solarChart" width="400" height="200"></canvas>
+        <canvas id="batteryChart" width="400" height="200"></canvas>
+        <canvas id="loadChart" width="400" height="200"></canvas>
+        <canvas id="gridChart" width="400" height="200"></canvas>
+    </div>
+    <script>
+        $(document).ready(function() {
+            const ctxSolar = document.getElementById('solarChart').getContext('2d');
+            const ctxBattery = document.getElementById('batteryChart').getContext('2d');
+            const ctxLoad = document.getElementById('loadChart').getContext('2d');
+            const ctxGrid = document.getElementById('gridChart').getContext('2d');
+
+            // Sample data for solar energy (kWh) over 10 days
+            const days = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7', 'Day 8', 'Day 9', 'Day 10'];
+            const solarData = [5, 8, 12, 15, 10, 18, 20, 18, 10, 6];
+            const batteryData = [0, 2, 5, 3, 6, 4, 7, 10, 8, 6];
+            const dischargeData = [-0, -1, -2, -1, -3, -2, -4, -5, -4, -3];
+            const loadData = [3, 5, 4, 6, 5, 7, 8, 6, 5, 4]; // Load data (kWh) over 10 days
+            const gridData = solarData.map((s, index) => s - batteryData[index] + dischargeData[index]); // Net grid data (kWh)
+
+            // Solar Chart
+            const solarChart = new Chart(ctxSolar, {
+                type: 'bar',
+                data: {
+                    labels: days,
+                    datasets: [{
+                        label: 'Solar Energy (kWh)',
+                        data: solarData,
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Energy (kWh)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Battery Chart
+            const batteryChart = new Chart(ctxBattery, {
+                type: 'bar',
+                data: {
+                    labels: days,
+                    datasets: [{
+                        label: 'Battery Charge (kWh)',
+                        data: batteryData,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    },
+                    {
+                        label: 'Battery Discharge (kWh)',
+                        data: dischargeData,
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Energy (kWh)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Load Chart
+            const loadChart = new Chart(ctxLoad, {
+                type: 'line',
+                data: {
+                    labels: days,
+                    datasets: [{
+                        label: 'Load (kWh)',
+                        data: loadData,
+                        borderColor: 'rgba(255, 206, 86, 1)',
+                        backgroundColor: 'rgba(255, 206, 86, 0.6)',
+                        fill: true,
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Energy (kWh)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Grid Chart
+            const gridChart = new Chart(ctxGrid, {
+                type: 'line',
+                data: {
+                    labels: days,
+                    datasets: [{
+                        label: 'Net Grid Energy (kWh)',
+                        data: gridData,
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        backgroundColor: 'rgba(153, 102, 255, 0.6)',
+                        fill: true,
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Energy (kWh)'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
